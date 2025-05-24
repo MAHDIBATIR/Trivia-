@@ -1,12 +1,14 @@
 package ma.enset.quizapp1;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,88 +24,85 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView profileEmail;
-    private EditText profileUsername;
-    private Button saveProfileButton;
-    private Button changePasswordButton;
-    private Button deleteAccountButton;
+    private TextView usernameText, emailText, topScoreText;
+    private ImageButton backButton;
+    private Button logoutButton;
+    private ScoreManager scoreManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Make status bar icons dark (for light status bar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        
         setContentView(R.layout.activity_profile);
-
+        
         // Initialize views
-        profileEmail = findViewById(R.id.profileEmail);
-        profileUsername = findViewById(R.id.profileUsername);
-        saveProfileButton = findViewById(R.id.saveProfileButton);
-        changePasswordButton = findViewById(R.id.changePasswordButton);
-        deleteAccountButton = findViewById(R.id.deleteAccountButton);
-
-        // Load current user data
-        loadUserProfile();
-
-        // Set click listeners
-        saveProfileButton.setOnClickListener(new View.OnClickListener() {
+        usernameText = findViewById(R.id.usernameText);
+        emailText = findViewById(R.id.emailText);
+        topScoreText = findViewById(R.id.topScoreText);
+        backButton = findViewById(R.id.backButton);
+        logoutButton = findViewById(R.id.logoutButton);
+        
+        // Initialize score manager
+        scoreManager = new ScoreManager(this);
+        
+        // Set up back button
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUserProfile();
+                finish();
             }
         });
-
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+        
+        // Set up logout button
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showChangePasswordDialog();
+                FirebaseAuthHelper.signOut(ProfileActivity.this, MainActivity.class);
             }
         });
-
-        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeleteAccountConfirmation();
-            }
-        });
+        
+        // Load and display user information
+        loadUserInfo();
     }
-
-    private void loadUserProfile() {
-        FirebaseUser user = FirebaseAuthHelper.getCurrentUser();
-        if (user != null) {
-            // Set email (cannot be changed in Firebase without re-authentication)
-            profileEmail.setText(user.getEmail());
-            
-            // Set display name if available
-            if (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
-                profileUsername.setText(user.getDisplayName());
+    
+    /**
+     * Load and display user information
+     */
+    private void loadUserInfo() {
+        // Get current user ID
+        String userId = FirebaseAuthHelper.getCurrentUser().getUid();
+        
+        // Get display name and email
+        String displayName = FirebaseAuthHelper.getUserDisplayName();
+        String email = FirebaseAuthHelper.getCurrentUser().getEmail();
+        
+        // Update UI with user info
+        usernameText.setText(displayName);
+        emailText.setText(email);
+        
+        // Set a loading indicator for the score
+        topScoreText.setText("Top Score: Loading...");
+        
+        // Get user's top score using the callback method
+        scoreManager.getUserTopScore(userId, new ScoreManager.UserTopScoreListener() {
+            @Override
+            public void onTopScoreRetrieved(int topScore) {
+                // Update UI with the score
+                topScoreText.setText("Top Score: " + topScore);
             }
-        }
-    }
 
-    private void saveUserProfile() {
-        String displayName = profileUsername.getText().toString().trim();
-        if (TextUtils.isEmpty(displayName)) {
-            profileUsername.setError("Username cannot be empty");
-            return;
-        }
-
-        FirebaseUser user = FirebaseAuthHelper.getCurrentUser();
-        if (user != null) {
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(displayName)
-                    .build();
-
-            user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(ProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(ProfileActivity.this, "Failed to update profile: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
+            @Override
+            public void onError(String errorMessage) {
+                // Handle error
+                Toast.makeText(ProfileActivity.this, "Error loading score: " + errorMessage, Toast.LENGTH_SHORT).show();
+                topScoreText.setText("Top Score: 0");
+            }
+        });
     }
 
     private void showChangePasswordDialog() {

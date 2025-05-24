@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bga2"
+    android:background="@drawable/cinema_background"
     android:paddingStart="24dp"
     android:paddingEnd="24dp"
     android:paddingTop="48dp"
@@ -134,5 +134,20 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:background="@color/primary"
+        android:padding="12dp" />
+        
+    <!-- Main Menu Button -->
+    <Button
+        android:id="@+id/mainMenuButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="MAIN MENU"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@color/primary_variant"
         android:padding="12dp" />
 </LinearLayout>

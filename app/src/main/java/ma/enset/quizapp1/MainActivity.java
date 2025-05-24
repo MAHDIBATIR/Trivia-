@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         
         // Disable reCAPTCHA verification for testing
-        mAuth.getFirebaseAuthSettings().setAppVerificationDisabledForTesting(true);
+//        mAuth.getFirebaseAuthSettings().setAppVerificationDisabledForTesting(true);
 
         // Initialize views with correct IDs from your XML
         emailInput = findViewById(R.id.Email);  // Note uppercase E in Email
@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in and update UI accordingly
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            // User is already signed in, go directly to quiz
-            startActivity(new Intent(MainActivity.this, DynamicQuizActivity.class));
+            // User is already signed in, go directly to main menu
+            startActivity(new Intent(MainActivity.this, MainMenuActivity.class));
             finish();
         }
     }
@@ -130,9 +130,9 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Login successful!", 
                                     Toast.LENGTH_SHORT).show();
                             
-                            // Proceed to quiz
-                            Intent quizIntent = new Intent(MainActivity.this, DynamicQuizActivity.class);
-                            startActivity(quizIntent);
+                            // Proceed to main menu
+                            Intent mainMenuIntent = new Intent(MainActivity.this, MainMenuActivity.class);
+                            startActivity(mainMenuIntent);
                             finish();
                         } else {
                             // If sign in fails, display a message to the user

@@ -1,5 +1,6 @@
 package ma.enset.quizapp1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -12,38 +13,37 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * Helper class to manage Firebase Authentication tasks
+ * Helper class for Firebase Authentication operations
  */
 public class FirebaseAuthHelper {
     
-    private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    
     /**
-     * Check if a user is currently signed in
-     * @return true if a user is signed in, false otherwise
+     * Check if a user is signed in
+     * @return true if user is signed in, false otherwise
      */
     public static boolean isUserSignedIn() {
-        return mAuth.getCurrentUser() != null;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        return user != null;
     }
     
     /**
-     * Get the current signed in user
-     * @return FirebaseUser object for the current user or null if no user is signed in
+     * Get the currently signed in Firebase user
+     * @return FirebaseUser object or null if no user is signed in
      */
     public static FirebaseUser getCurrentUser() {
-        return mAuth.getCurrentUser();
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
     
     /**
      * Get the display name of the current user
-     * @return Display name string or "Guest" if not available
+     * @return Display name or "User" if not available
      */
     public static String getUserDisplayName() {
         FirebaseUser user = getCurrentUser();
         if (user != null && user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
             return user.getDisplayName();
         }
-        return "Guest";
+        return "User";
     }
     
     /**
@@ -59,17 +59,25 @@ public class FirebaseAuthHelper {
     }
     
     /**
-     * Sign the current user out
-     * @param context Context to use for operations
-     * @param targetActivity Activity class to navigate to after signing out (optional)
+     * Sign out the current user and redirect to another activity
+     * @param context Current activity context
+     * @param destClass Destination activity class after logout
      */
-    public static void signOut(Context context, Class<?> targetActivity) {
-        mAuth.signOut();
+    public static void signOut(Context context, Class<?> destClass) {
+        // Sign out of Firebase
+        FirebaseAuth.getInstance().signOut();
         
-        if (targetActivity != null) {
-            Intent intent = new Intent(context, targetActivity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
+        // Show toast message
+        Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        
+        // Redirect to destination activity
+        Intent intent = new Intent(context, destClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+        
+        // If context is an activity, finish it
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
         }
     }
     

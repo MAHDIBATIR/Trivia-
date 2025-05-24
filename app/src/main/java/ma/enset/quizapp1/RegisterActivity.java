@@ -131,8 +131,8 @@ public class RegisterActivity extends AppCompatActivity {
                                                         "Registration successful!", 
                                                         Toast.LENGTH_SHORT).show();
                                                 
-                                                // Go to DynamicQuizActivity
-                                                Intent intent = new Intent(RegisterActivity.this, DynamicQuizActivity.class);
+                                                // Go to MainMenuActivity
+                                                Intent intent = new Intent(RegisterActivity.this, MainMenuActivity.class);
                                                 startActivity(intent);
                                                 finish();
                                             }

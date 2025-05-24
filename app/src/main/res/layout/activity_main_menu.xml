@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/cinema_background"
+    android:fitsSystemWindows="true"
+    tools:context=".MainMenuActivity">
+
+    <!-- Top padding for status bar -->
+    <View
+        android:id="@+id/statusBarSpace"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Profile Button -->
+    <ImageButton
+        android:id="@+id/profileButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:tint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusBarSpace"
+        android:contentDescription="Profile" />
+        
+    <!-- Logout Button -->
+    <ImageButton
+        android:id="@+id/logoutButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_lock_power_off"
+        app:tint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusBarSpace"
+        android:contentDescription="Logout" />
+
+    <!-- App Logo -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/appLogo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/round_background"
+        android:src="@drawable/logofinale"
+        app:civ_border_color="@color/primary"
+        app:civ_border_width="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusBarSpace" />
+
+    <!-- Welcome Text -->
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Welcome!"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appLogo" />
+
+    <!-- Card for Buttons -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#E6183B4E"
+        app:layout_constraintTop_toBottomOf="@id/welcomeText">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Start New Quiz Button -->
+            <Button
+                android:id="@+id/startNewQuizButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/button_gradient"
+                android:padding="16dp"
+                android:text="START NEW QUIZ"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Continue Quiz Button -->
+            <Button
+                android:id="@+id/continueQuizButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/button_gradient"
+                android:padding="16dp"
+                android:text="CONTINUE QUIZ"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <!-- Try Again Button (for completed users) -->
+            <Button
+                android:id="@+id/tryAgainButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/button_gradient"
+                android:padding="16dp"
+                android:text="TRY AGAIN"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <!-- Top Scores Button -->
+            <Button
+                android:id="@+id/topScoresButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary_variant"
+                android:padding="16dp"
+                android:text="VIEW TOP SCORES"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

@@ -1,9 +1,12 @@
 package ma.enset.quizapp1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -17,6 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -37,13 +41,19 @@ public class DynamicQuizActivity extends AppCompatActivity {
     private TextView questionNumberText, questionText, currentScoreText, timeLeftText;
     private RadioGroup optionsGroup;
     private Button nextButton;
-    private ImageButton profileButton;
+    private ImageButton profileButton, backButton;
     private ImageView questionImage;
     private ProgressBar timerProgressBar;
     
     private int currentScore = 0;
     private int currentQuestionIndex = 0;
     private List<Question> questions;
+    private String userId;
+    private ScoreManager scoreManager;
+    private boolean randomizeQuestions = true; // Default to false unless specified
+    
+    // CSV file constants
+    private static final String QUESTIONS_CSV_FILE = "movies.csv";
     
     // Timer variables
     private static final long QUESTION_TIMER_DURATION = 30000; // 30 seconds
@@ -74,12 +84,49 @@ public class DynamicQuizActivity extends AppCompatActivity {
         timeLeftText = findViewById(R.id.textViewTimeLeft);
         timerProgressBar = findViewById(R.id.timerProgressBar);
         profileButton = findViewById(R.id.profileButton);
+        backButton = findViewById(R.id.backButton);
 
-        // Load questions from data source
-        loadQuestionsFromJson();
+        // Initialize ScoreManager
+        scoreManager = new ScoreManager(this);
+        
+        // Get current user ID
+        userId = FirebaseAuthHelper.getCurrentUser().getUid();
+        
+        // Check if we should randomize questions (for returning users)
+        randomizeQuestions = getIntent().getBooleanExtra("randomizeQuestions", false);
 
-        // Display the first question
-        displayQuestion(currentQuestionIndex);
+        // Initialize questions list
+        questions = new ArrayList<>();
+        
+        // Load questions from CSV file
+        loadQuestionsFromCSV();
+        
+        // If continuing a session, restore the current question index
+        if (QuizStateManager.hasStartedQuizzes(this, userId) && !randomizeQuestions) {
+            currentQuestionIndex = QuizStateManager.getCurrentQuestionIndex(this, userId);
+        } else {
+            // Reset for new quiz session
+            currentQuestionIndex = 0;
+        }
+        
+        // Check if questions were loaded successfully
+        if (questions != null && !questions.isEmpty()) {
+            // Mark quizzes as started
+            QuizStateManager.markQuizzesAsStarted(this, userId);
+            
+            // Save total questions count for progress calculation
+            QuizStateManager.saveTotalQuestions(this, questions.size());
+            
+            // Display the first question
+            displayQuestion(currentQuestionIndex);
+            
+            // Start timer for the current question
+            startQuestionTimer();
+        } else {
+            Toast.makeText(this, "Failed to load questions", Toast.LENGTH_LONG).show();
+            finish(); // Close activity if no questions available
+            return;
+        }
         
         // Initialize score display
         updateScoreDisplay();
@@ -87,6 +134,40 @@ public class DynamicQuizActivity extends AppCompatActivity {
         // Start timer for the current question
         startQuestionTimer();
 
+        // Set up back button to exit quiz with confirmation
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show confirmation dialog
+                new AlertDialog.Builder(DynamicQuizActivity.this)
+                    .setTitle("Exit Quiz")
+                    .setMessage("Are you sure you want to exit? Your progress will be lost.")
+                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Save the current state before exiting
+                            // Mark quiz as started to show continue button
+                            QuizStateManager.markQuizzesAsStarted(DynamicQuizActivity.this, userId);
+                            // Save total questions count for progress calculation
+                            QuizStateManager.saveTotalQuestions(DynamicQuizActivity.this, questions.size());
+                            // Save current question index
+                            QuizStateManager.updateCurrentQuestionIndex(DynamicQuizActivity.this, userId, currentQuestionIndex);
+                            
+                            // Go back to main menu
+                            Intent intent = new Intent(DynamicQuizActivity.this, MainMenuActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear the activity stack
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Continue Quiz", null)
+                    .show();
+            }
+        });
+        
+        // Set initial button text to "Submit"
+        nextButton.setText("Submit");
+        
         // Set up next button click listener
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,75 +185,129 @@ public class DynamicQuizActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        
+        // Set up back button click listener
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Return to main menu
+                Intent intent = new Intent(DynamicQuizActivity.this, MainMenuActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
     
     private void processAnswer() {
         // Prevent multiple simultaneous calls
-        if (isProcessingAnswer) {
-            return;
-        }
+        if (isProcessingAnswer) return;
         
         isProcessingAnswer = true;
         
-        // Cancel current timer
+        // Stop the timer
         if (questionTimer != null) {
             questionTimer.cancel();
             isTimerRunning = false;
         }
-
-        // Check if an option is selected
-        int selectedId = optionsGroup.getCheckedRadioButtonId();
-
+        
         // Get the current question
         Question currentQuestion = questions.get(currentQuestionIndex);
         
-        if (selectedId != -1) {
-            // Check the answer
-            RadioButton selectedRadioButton = findViewById(selectedId);
+        // Get reference to the feedback message view
+        TextView feedbackMessageView = findViewById(R.id.feedbackMessageView);
+        
+        // Check if an answer was selected
+        int selectedRadioButtonId = optionsGroup.getCheckedRadioButtonId();
+        if (selectedRadioButtonId != -1) {
+            RadioButton selectedRadioButton = findViewById(selectedRadioButtonId);
+            
             if (selectedRadioButton != null) {
                 String selectedAnswer = selectedRadioButton.getText().toString();
                 
                 if (selectedAnswer.equals(currentQuestion.getCorrectAnswer())) {
                     currentScore += 10; // Award points for correct answer
-                    Toast.makeText(DynamicQuizActivity.this, "Correct!", Toast.LENGTH_SHORT).show();
+                    
+                    // Show correct answer feedback
+                    feedbackMessageView.setText("Correct!");
+                    feedbackMessageView.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark, null));
+                    feedbackMessageView.setVisibility(View.VISIBLE);
                     
                     // Update score display
                     updateScoreDisplay();
                 } else {
-                    Toast.makeText(DynamicQuizActivity.this, 
-                        "Incorrect. The correct answer is: " + currentQuestion.getCorrectAnswer(), 
-                        Toast.LENGTH_SHORT).show();
+                    // Show incorrect answer feedback
+                    feedbackMessageView.setText("Incorrect. The correct answer is: " + currentQuestion.getCorrectAnswer());
+                    feedbackMessageView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark, null));
+                    feedbackMessageView.setVisibility(View.VISIBLE);
                 }
             }
         } else {
             // No answer selected - inform user they ran out of time or skipped
-            Toast.makeText(DynamicQuizActivity.this, 
-                "Time's up! The correct answer was: " + currentQuestion.getCorrectAnswer(), 
-                Toast.LENGTH_SHORT).show();
+            feedbackMessageView.setText("Time's up! The correct answer was: " + currentQuestion.getCorrectAnswer());
+            feedbackMessageView.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_dark, null));
+            feedbackMessageView.setVisibility(View.VISIBLE);
         }
-
-        // Move to next question or finish quiz
-        moveToNextQuestion();
         
-        // Reset processing flag
-        isProcessingAnswer = false;
-    }
-    
-    private void moveToNextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.size()) {
-            displayQuestion(currentQuestionIndex);
-            // Reset and restart timer for the next question
-            timeLeftInMillis = QUESTION_TIMER_DURATION;
-            startQuestionTimer();
-        } else {
-            // Quiz completed - go to results
-            Intent intent = new Intent(DynamicQuizActivity.this, Score.class);
-            intent.putExtra("score", currentScore);
-            intent.putExtra("totalQuestions", questions.size());
-            startActivity(intent);
-            finish();
-        }
+        // Change the next button to show "Next Question"
+        nextButton.setText("Next Question");
+        
+        // Update button behavior to move to next question when clicked
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Hide the feedback message
+                feedbackMessageView.setVisibility(View.GONE);
+                
+                // Increment the question index
+                currentQuestionIndex++;
+                
+                // Update current question index in state manager
+                QuizStateManager.updateCurrentQuestionIndex(DynamicQuizActivity.this, userId, currentQuestionIndex);
+                
+                // Check if we've reached the end of the questions
+                if (currentQuestionIndex < questions.size()) {
+                    // Display the next question
+                    displayQuestion(currentQuestionIndex);
+                    
+                    // Reset the radio group
+                    optionsGroup.clearCheck();
+                    
+                    // Restart the timer
+                    timeLeftInMillis = QUESTION_TIMER_DURATION;
+                    startQuestionTimer();
+                    
+                    // Reset the next button to "Submit"
+                    nextButton.setText("Submit");
+                    nextButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            processAnswer();
+                        }
+                    });
+                } else {
+                    // End of quiz reached - mark as completed
+                    QuizStateManager.markQuizzesAsCompleted(DynamicQuizActivity.this, userId);
+                    
+                    // Save the score
+                    String userName = FirebaseAuthHelper.getUserDisplayName();
+                    scoreManager.saveUserScore(userId, userName, currentScore);
+                    
+                    // Go to results
+                    Intent intent = new Intent(DynamicQuizActivity.this, Score.class);
+                    intent.putExtra("score", currentScore);
+                    intent.putExtra("totalQuestions", questions.size());
+                    startActivity(intent);
+                    finish();
+                }
+                
+                // Reset processing flag
+                isProcessingAnswer = false;
+            }
+        });
+        
+        // Update current question index in state manager for progress tracking
+        QuizStateManager.updateCurrentQuestionIndex(this, userId, currentQuestionIndex);
     }
     
     private void updateScoreDisplay() {
@@ -248,14 +383,93 @@ public class DynamicQuizActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Resume timer if not finished and not already running
-        if (currentQuestionIndex < questions.size() && timeLeftInMillis > 0 && !isTimerRunning) {
+        // Restart timer if it was running
+        if (timeLeftInMillis > 0 && !isTimerRunning) {
             startQuestionTimer();
+        }
+    }
+    
+    // Override onBackPressed to handle hardware back button
+    @Override
+    public void onBackPressed() {
+        // Show the same confirmation dialog as the back button
+        new AlertDialog.Builder(this)
+            .setTitle("Exit Quiz")
+            .setMessage("Are you sure you want to exit? Your progress will be saved.")
+            .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Save the current state before exiting
+                    // Mark quiz as started to show continue button
+                    QuizStateManager.markQuizzesAsStarted(DynamicQuizActivity.this, userId);
+                    // Save total questions count for progress calculation
+                    QuizStateManager.saveTotalQuestions(DynamicQuizActivity.this, questions.size());
+                    // Save current question index
+                    QuizStateManager.updateCurrentQuestionIndex(DynamicQuizActivity.this, userId, currentQuestionIndex);
+                    
+                    // Go back to main menu
+                    Intent intent = new Intent(DynamicQuizActivity.this, MainMenuActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear the activity stack
+                    startActivity(intent);
+                    finish();
+                }
+            })
+            .setNegativeButton("Continue Quiz", null)
+            .show();
+    }
+
+    /**
+     * Load questions from CSV file in assets
+     */
+    private void loadQuestionsFromCSV() {
+        try {
+            // First, load all questions from the CSV file
+            InputStream is = getAssets().open(QUESTIONS_CSV_FILE);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            
+            List<Question> allQuestions = new ArrayList<>();
+            String line;
+            boolean firstLine = true; // Skip header if present
+            
+            // Read all questions from CSV
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+                Question question = MovieQuestionParser.parseQuestionLine(line);
+                if (question != null) {
+                    allQuestions.add(question);
+                }
+            }
+            
+            reader.close();
+            
+            // If we have questions, take 5 random ones
+            if (!allQuestions.isEmpty()) {
+                // Always shuffle the list regardless of randomizeQuestions setting
+                // since we want 5 random questions from the entire dataset
+                java.util.Collections.shuffle(allQuestions);
+                
+                // Take the first 5 (or less if there aren't 5)
+                int numQuestions = Math.min(5, allQuestions.size());
+                questions = allQuestions.subList(0, numQuestions);
+            } else {
+                // Fallback to hardcoded questions if CSV loading fails
+                Toast.makeText(this, "No questions found in CSV file", Toast.LENGTH_SHORT).show();
+                loadHardcodedQuestions();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Fallback to hardcoded questions if CSV loading fails
+            Toast.makeText(this, "Failed to load questions from CSV: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            loadHardcodedQuestions();
         }
     }
 
     private void loadQuestionsFromJson() {
-        questions = new ArrayList<>();
+        // Clear existing questions
+        questions.clear();
         
         try {
             // Read the JSON file from assets
@@ -390,7 +604,7 @@ public class DynamicQuizActivity extends AppCompatActivity {
                 "Peter Jackson",
                 null));
     }
-
+    
     private void displayQuestion(int index) {
         // Clear previous radio buttons
         optionsGroup.removeAllViews();
@@ -428,5 +642,20 @@ public class DynamicQuizActivity extends AppCompatActivity {
         timeLeftText.setText("Time: 30s");
         timerProgressBar.setProgress((int) QUESTION_TIMER_DURATION);
         timeLeftInMillis = QUESTION_TIMER_DURATION;
+        
+        // Reset the button text to "Submit"
+        nextButton.setText("Submit");
+        
+        // Hide any previous feedback
+        TextView feedbackMessageView = findViewById(R.id.feedbackMessageView);
+        feedbackMessageView.setVisibility(View.GONE);
+        
+        // Set the button behavior to process answer
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                processAnswer();
+            }
+        });
     }
-} 
+}

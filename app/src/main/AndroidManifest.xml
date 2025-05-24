@@ -13,43 +13,54 @@
         android:theme="@style/Theme.MovieQuiz"
         tools:targetApi="31">
 
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TopScoresActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Score"
-            android:exported="false" />
-        <!-- <activity
-            android:name=".Quiz5"
-            android:exported="false" />
-        <activity
-            android:name=".Quiz4"
-            android:exported="false" />
-        <activity
-            android:name=".Quiz3"
-            android:exported="false" />
-        <activity
-            android:name=".Quiz2"
-            android:exported="false" />
-        <activity
-            android:name=".Quiz1"
-            android:exported="false" /> -->
-        <activity
-            android:name=".DynamicQuizActivity"
-            android:exported="false" />
-        <activity android:name=".RegisterActivity" />
+        <!-- Main Activities -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name=".MainMenuActivity"
+            android:exported="false" />
+        <!-- Quiz Activities -->
+        <activity
+            android:name=".DynamicQuizActivity"
+            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".Quiz1"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".Quiz2"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".Quiz3"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".Quiz4"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".Quiz5"-->
+<!--            android:exported="false" />-->
+
+        <!-- Score Activities -->
+        <activity
+            android:name=".Score"
+            android:exported="false" />
+        <activity
+            android:name=".TopScoresActivity"
+            android:exported="false" />
+        
+        <!-- User Activities -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity 
+            android:name=".RegisterActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
