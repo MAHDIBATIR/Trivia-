@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bga2"
+    android:orientation="vertical"
+    android:padding="24dp"
+    tools:context=".ProfileActivity">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/profileTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:text="Your Profile"
+        android:textColor="@color/accent"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <!-- User Avatar -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:background="@drawable/round_background"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:civ_border_color="@color/primary"
+        app:civ_border_width="3dp" />
+
+    <!-- Username Field -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Username"
+        android:textColor="@color/primary"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/profileUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#33FFFFFF"
+        android:hint="Your username"
+        android:padding="15dp"
+        android:textColor="@color/accent"
+        android:textColorHint="#80FFFFFF" />
+
+    <!-- Email Field -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Email"
+        android:textColor="@color/primary"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/profileEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#33FFFFFF"
+        android:padding="15dp"
+        android:text="user@example.com"
+        android:textColor="@color/accent" />
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/saveProfileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/accent"
+        android:text="Save Profile"
+        android:textColor="@android:color/white" />
+
+    <!-- Change Password Button -->
+    <Button
+        android:id="@+id/changePasswordButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/primary"
+        android:text="Change Password"
+        android:textColor="@android:color/white" />
+
+    <!-- Delete Account Button -->
+    <Button
+        android:id="@+id/deleteAccountButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#E91E63"
+        android:text="Delete Account"
+        android:textColor="@android:color/white" />
+
+</LinearLayout> 

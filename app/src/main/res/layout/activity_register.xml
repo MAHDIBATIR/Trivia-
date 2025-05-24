@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/bga2"
+
+    tools:context=".RegisterActivity">
+
+    <!-- Logo -->
+
+    <!-- Full Name Field -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="170dp"
+        android:layout_height="167dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/round_background"
+        android:src="@drawable/logofinale"
+        app:civ_border_color="@color/primary"
+        app:civ_border_width="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@android:drawable/ic_menu_manage"
+        android:drawableTint="@color/accent"
+        android:hint="Username"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:inputType="textPersonName" />
+
+    <!-- Email Field -->
+        <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@android:drawable/ic_dialog_email"
+        android:drawableTint="@color/accent"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Password Field -->
+        <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@android:drawable/ic_lock_idle_lock"
+        android:drawableTint="@color/accent"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp" />
+
+    <!-- Confirm Password Field -->
+        <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@android:drawable/ic_lock_idle_lock"
+        android:drawableTint="@color/accent"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp" />
+
+    <!-- Register Button -->
+        <Button
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@color/accent"
+        android:layout_marginTop="20dp" />
+
+    <!-- Already have an account TextView -->
+        <TextView
+        android:id="@+id/loginText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Already have an account? Log in"
+        android:textStyle="bold"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:layout_marginTop="20dp" />
+        
+        <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

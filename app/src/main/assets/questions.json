@@ -1,0 +1,57 @@
+[
+  {
+    "questionText": "Who directed the film 'Inception'?",
+    "options": [
+      "Steven Spielberg",
+      "Christopher Nolan",
+      "James Cameron",
+      "Martin Scorsese"
+    ],
+    "correctAnswer": "Christopher Nolan",
+    "imageResource": null
+  },
+  {
+    "questionText": "Walter White is the main character in which TV series?",
+    "options": [
+      "Breaking Bad",
+      "Game of Thrones",
+      "The Walking Dead",
+      "The Sopranos"
+    ],
+    "correctAnswer": "Breaking Bad",
+    "imageResource": null
+  },
+  {
+    "questionText": "Who played Batman in 'The Dark Knight' trilogy?",
+    "options": [
+      "Michael Keaton",
+      "Christian Bale",
+      "Ben Affleck",
+      "Robert Pattinson"
+    ],
+    "correctAnswer": "Christian Bale",
+    "imageResource": null
+  },
+  {
+    "questionText": "Which superhero team includes Iron Man, Thor, and Captain America?",
+    "options": [
+      "The Avengers",
+      "Justice League",
+      "Guardians of the Galaxy",
+      "The Eternals"
+    ],
+    "correctAnswer": "The Avengers",
+    "imageResource": null
+  },
+  {
+    "questionText": "Who directed the 'Lord of the Rings' trilogy?",
+    "options": [
+      "Joe Russo",
+      "James Gunn",
+      "Peter Jackson",
+      "George Lucas"
+    ],
+    "correctAnswer": "Peter Jackson",
+    "imageResource": null
+  }
+] 

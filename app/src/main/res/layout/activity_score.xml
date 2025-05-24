@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bga2"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="48dp"
+    android:paddingBottom="24dp"
+    android:fitsSystemWindows="true"
+    tools:context=".Score">
+
+    <!-- Logo -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imv1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/round_background"
+        android:src="@drawable/logofinale"
+        app:civ_border_color="@color/primary"
+        app:civ_border_width="5dp" />
+
+    <!-- Score Text -->
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Votre Score est :"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/accent" />
+
+    <!-- Circular Progress with Percentage -->
+    <FrameLayout
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp">
+
+        <!-- Circular Progress Background -->
+        <ProgressBar
+            android:id="@+id/progressBackground"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/circle_background"
+            android:rotation="-90" />
+
+        <!-- Animated Circular Progress -->
+        <ProgressBar
+            android:id="@+id/pb"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/circle_progress"
+            android:rotation="-90" />
+
+        <!-- Percentage Text -->
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="80%"
+            android:textStyle="bold"
+            android:textSize="48sp"
+            android:textColor="@color/accent" />
+    </FrameLayout>
+
+    <!-- Button Container for Try Again and Logout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        tools:context=".MainActivity">
+
+        <!-- Try Again Button -->
+        <Button
+            android:id="@+id/ta"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="10dp"
+            android:text="TRY AGAIN"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@color/accent"
+            android:padding="12dp" />
+
+        <!-- Logout Button -->
+        <Button
+            android:id="@+id/lo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="10dp"
+            android:text="LOG OUT"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@color/accent"
+            android:padding="12dp" />
+    </LinearLayout>
+    
+    <!-- View Top Scores Button -->
+    <Button
+        android:id="@+id/viewTopScores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="VIEW TOP SCORES"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@color/primary"
+        android:padding="12dp" />
+</LinearLayout>

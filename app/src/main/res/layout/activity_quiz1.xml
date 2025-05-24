@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bga2"
+    android:padding="16dp"
+
+    >
+
+    <TextView
+        android:id="@+id/textViewQuestionNumber1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Question 1"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/accent"
+        android:textStyle="bold"
+        android:layout_marginTop="130dp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:src="@drawable/q1_image"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="20dp"/>
+
+    <TextView
+        android:id="@+id/textViewQuestion1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Qui a réalisé le film « Inception » ?"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:textColor="@color/accent"
+        android:textStyle="bold"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent"
+        android:layout_marginTop="24dp">
+
+        <RadioButton
+            android:id="@+id/answer1_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Steven Spielberg"
+            android:textSize="16sp"
+            android:textColor="@color/button_background"
+            android:buttonTint="@color/text_error"/>
+
+        <RadioButton
+            android:id="@+id/answer1_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Christopher Nolan"
+            android:textSize="16sp"
+            android:textColor="@color/button_background"
+            android:buttonTint="@color/text_error"/>
+
+        <RadioButton
+            android:id="@+id/answer1_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="James Cameron"
+            android:textSize="16sp"
+            android:textColor="@color/button_background"
+            android:buttonTint="@color/text_error"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/buttonNext1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Suivant"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:background="@color/accent"/>
+</LinearLayout>

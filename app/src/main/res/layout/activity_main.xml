@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bga2"
+    tools:context=".MainActivity">
+    <!-- Logo -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imv1"
+        android:layout_width="170dp"
+        android:layout_height="167dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/round_background"
+        android:src="@drawable/logofinale"
+        app:civ_border_color="@color/primary"
+        app:civ_border_width="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:drawableLeft="@android:drawable/ic_dialog_email"
+            android:drawableTint="@color/accent"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/accent"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:drawableLeft="@android:drawable/ic_lock_idle_lock"
+            android:drawableTint="@color/accent"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:textColor="@color/accent" />
+
+        <Button
+            android:id="@+id/signInButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign in"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:background="@color/accent"
+            android:layout_margin="10dp" />
+            
+        <Button
+            android:id="@+id/topScoresButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Top Scores"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:background="@color/primary"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/registerText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="To register click here"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:textAlignment="center"/>
+            
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>
